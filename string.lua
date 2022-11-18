@@ -1,6 +1,11 @@
 #!/usr/local/bin/lua
 
--- 
+-- 字符串
+
+--[[
+单引号间的一串字符。
+双引号间的一串字符。
+--]]
 
 local string1 = "this is string1"
 local string2 = 'this is string2'
@@ -38,3 +43,6 @@ print("-2e2" * "6") -- -1200.0
 local len = "www.runoob.com"
 print(#len) --14
 print(#"www.runoob.com") --14
+
+-- 字符串拼接
+print('a'..'b') --ab
