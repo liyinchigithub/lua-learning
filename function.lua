@@ -23,8 +23,8 @@ print(factorial2(5))
 
 -- function 可以以匿名函数（anonymous function）的方式通过参数传递:
 
--- function_test2.lua 脚本文件
-function testFun(tab, fun) --首字母小写的全局变量
+-- function_test2.lua 脚本文件   入参是一个表、入参是一个函数
+function testFun(tab, fun) --[首字母小写]的全局变量
     for k, v in pairs(tab) do
         print(fun(k, v));
     end
@@ -33,7 +33,7 @@ end
 tab = { key1 = "val1", key2 = "val2" };
 testFun(tab,
     function(key, val) --匿名函数
-        return key .. "=" .. val;
+        return key .. "=" .. val; -- 字符串拼接
     end
 );
 -- 脚本执行结果为：

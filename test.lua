@@ -33,3 +33,40 @@ print(type(true))               --> boolean
 print(type(nil))                --> nil
 print(type(type(X)))            --> string
 
+
+-- 99乘法表
+a=9
+b=9
+for i = 1, a, 1 do
+    for j = 1, b, 1 do
+        print(i.."x"..j..'='..i*j)
+    end
+    print('\n')
+end
+
+--表
+tab={name1="张三",name2="李四",name3="王五",name4="赵六"}
+
+for key, value in pairs(tab) do
+    print(key..'-----'..value)
+end
+
+tab2={1,2,3,4,5}
+for key, value in pairs(tab2) do
+    print(key..'-----'..value)
+    
+end
+
+tab3={}
+
+tab3[1]='小梅'
+tab3[2]='小红'
+tab3[3]='小明'
+tab3["vip"]='小刚'
+
+for key, value in pairs(tab3) do
+    print(key..'--'..value)
+end
+
+--表.属性
+print("tab.name1:"..tab.name1)
