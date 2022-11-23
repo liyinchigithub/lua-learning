@@ -70,3 +70,21 @@ end
 
 --表.属性
 print("tab.name1:"..tab.name1)
+
+
+--条件
+a=1
+b=2
+if (a<b) then
+    print(a..'小于'..b)
+end
+
+a=10
+b=2
+if (a<b) then
+    -- body
+    print(a..'小于'..b)
+else
+    -- body
+    print(a..'大'..b)
+end

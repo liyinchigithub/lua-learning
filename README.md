@@ -286,6 +286,7 @@ print(factorial1(5))
 factorial2 = factorial1
 print(factorial2(5))
 ```
+
 脚本执行结果为：
 ```lua
 $ lua function_test.lua 
@@ -293,6 +294,8 @@ $ lua function_test.lua
 120
 function 可以以匿名函数（anonymous function）的方式通过参数传递:
 ```
+
+
 实例
 ```lua
 -- function_test2.lua 脚本文件
@@ -309,8 +312,8 @@ function(key,val)--匿名函数
 end
 );
 ```
-脚本执行结果为：
 
+脚本执行结果为：
 ```lua
 $ lua function_test2.lua 
 key1 = val1
@@ -318,20 +321,179 @@ key2 = val2
 
 ```
 
+* 可以将函数作为参数传递给函数，如下实例：
 
-
-##
 ```lua
+myprint = function(param)
+   print("这是打印函数 -   ##",param,"##")
+end
+
+function add(num1,num2,functionPrint)
+   result = num1 + num2
+   -- 调用传递的函数参数
+   functionPrint(result)
+end
+
+myprint(10)
+
+-- myprint 函数作为参数传递
+add(2,5,myprint)
+```
+
+* 多返回值    Lua函数可以返回多个结果值，比如string.find，其返回匹配串"开始和结束的下标"（如果不存在匹配串返回nil）。
+```lua
+function maximum (a)
+    local mi = 1             -- 最大值索引
+    local m = a[mi]          -- 最大值
+    for i,val in ipairs(a) do
+       if val > m then
+           mi = i
+           m = val
+       end
+    end
+    return m, mi -- 返回2个参数
+end
+
+print(maximum({8,10,23,12,5}))
+```
+
+* 可变参数  Lua 函数可以接受可变数目的参数，和 C 语言类似，在函数参数列表中使用三点 ... 表示函数有可变的参数。
+
+```lua
+function add(...)  
+local s = 0  
+  for i, v in ipairs{...} do   --> {...} 表示一个由所有变长参数构成的数组  
+    s = s + v  
+  end  
+  return s  
+end  
+print(add(3,4,5,6,7))  --->25
+```
+
+* 可以将可变参数赋值给一个变量。
+
+```lua
+function average(...)
+   result = 0
+   local arg={...}    --> arg 为一个表，局部变量
+   for i,v in ipairs(arg) do
+      result = result + v
+   end
+   print("总共传入 " .. #arg .. " 个数")
+   return result/#arg
+end
+
+print("平均值为",average(10,5,3,4,5,6))
+```
+
+* 也可以通过 select("#",...) 来获取可变参数的数量:
+```lua
+function average(...)
+   result = 0
+   local arg={...}
+   for i,v in ipairs(arg) do
+      result = result + v
+   end
+   print("总共传入 " .. select("#",...) .. " 个数")
+   return result/select("#",...)
+end
+
+print("平均值为",average(10,5,3,4,5,6))
 ```
 
 
-##
+* 有时候我们可能需要几个固定参数加上可变参数，固定参数必须放在变长参数之前
 ```lua
+function fwrite(fmt, ...)  ---> 固定的参数fmt
+    return io.write(string.format(fmt, ...))    
+end
+
+fwrite("runoob\n")       --->fmt = "runoob", 没有变长参数。  
+fwrite("%d%d\n", 1, 2)   --->fmt = "%d%d", 变长参数为 1 和 2
 ```
 
+* 通常在遍历变长参数的时候只需要使用 {…}，然而变长参数可能会包含一些 nil，那么就可以用 select 函数来访问变长参数了：select('#', …) 或者 select(n, …)
 
-##
+select('#', …) 返回可变参数的长度。
+select(n, …) 用于返回从起点 n 开始到结束位置的所有参数列表。
+调用 select 时，必须传入一个固定实参 selector(选择开关) 和一系列变长参数。如果 selector 为数字 n，那么 select 返回参数列表中从索引 n 开始到结束位置的所有参数列表，否则只能为字符串 #，这样 select 返回变长参数的总数。
+
 ```lua
+function f(...)
+    a = select(3,...)  -->从第三个位置开始，变量 a 对应右边变量列表的第一个参数
+    print (a)
+    print (select(3,...)) -->打印所有列表参数
+end
+
+f(0,1,2,3,4,5)
+--[[
+2
+2       3       4       5
+]]
+```
+
+do  
+    function foo(...)  
+        for i = 1, select('#', ...) do  -->获取参数总数
+            local arg = select(i, ...); -->读取参数，arg 对应的是右边变量列表的第一个参数
+            print("arg", arg);  
+        end  
+    end  
+ 
+    foo(1, 2, 3, 4);  
+end
+
+## 条件
+
+Lua if 语句可以与 else 语句搭配使用, 在 if 条件表达式为 false 时执行 else 语句代码块。
+
+```lua
+if(布尔表达式)
+then
+   --[ 布尔表达式为 true 时执行该语句块 --]
+else
+   --[ 布尔表达式为 false 时执行该语句块 --]
+end
+```
+
+```lua
+--[ 定义变量 --]
+a = 100;
+--[ 检查条件 --]
+if( a < 20 )
+then
+   --[ if 条件为 true 时执行该语句块 --]
+   print("a 小于 20" )
+else
+   --[ if 条件为 false 时执行该语句块 --]
+   print("a 大于 20" )
+end
+print("a 的值为 :", a)
+```
+
+if elseif else
+```lua
+--[ 定义变量 --]
+a = 100
+
+--[ 检查布尔条件 --]
+if( a == 10 )
+then
+   --[ 如果条件为 true 打印以下信息 --]
+   print("a 的值为 10" )
+elseif( a == 20 )
+then  
+   --[ if else if 条件为 true 时打印以下信息 --]
+   print("a 的值为 20" )
+elseif( a == 30 )
+then
+   --[ if else if condition 条件为 true 时打印以下信息 --]
+   print("a 的值为 30" )
+else
+   --[ 以上条件语句没有一个为 true 时打印以下信息 --]
+   print("没有匹配 a 的值" )
+end
+print("a 的真实值为: ", a )
 ```
 
 
@@ -371,6 +533,96 @@ key2 = val2
 ```lua
 ```
 
+
+# Lua常用函数
+
+##
+```lua
+string.upper(argument):
+-- 字符串全部转为大写字母。
+string.lower(argument):
+-- 字符串全部转为小写字母。
+string.gsub(mainString,findString,replaceString,num)
+-- 在字符串中替换。
+-- mainString 为要操作的字符串， findString 为被替换的字符，replaceString 要替换的字符，num 替换次数（可以忽略，则全部替换），如：
+> string.gsub("aaaa","a","z",3);zzza   
+string.find (str, substr, [init, [plain]])
+-- 在一个指定的目标字符串 str 中搜索指定的内容 substr，如果找到了一个匹配的子串，就会返回这个子串的起始索引和结束索引，不存在则返回 nil。
+
+-- init 指定了搜索的起始位置，默认为 1，可以一个负数，表示从后往前数的字符个数。
+
+-- plain 表示是否使用简单模式，默认为 false，true 只做简单的查找子串的操作，false 表示使用使用正则模式匹配。
+
+以下实例查找字符串 "Lua" 的起始索引和结束索引位置：
+
+> string.find("Hello Lua user", "Lua", 1) 
+
+string.reverse(arg)
+字符串反转
+
+> string.reverse("Lua") auL
+string.format(...)
+
+返回一个类似printf的格式化字符串
+> string.format("the value is:%d",4)
+
+the value is:4
+
+string.char(arg) 和 string.byte(arg[,int])
+
+-- char 将整型数字转成字符并连接， byte 转换字符为整数值(可以指定某个字符，默认第一个字符)。
+
+> string.char(97,98,99,100) --abcd
+
+> string.byte("ABCD",4) --68
+
+> string.byte("ABCD") --65
+
+>
+string.len(arg)
+
+-- 计算字符串长度。
+string.len("abc")
+
+string.rep(string, n)
+-- 返回字符串string的n个拷贝
+
+> string.rep("abcd",2) --abcdabcd
+
+-- 链接两个字符串
+> print("www.runoob.".."com") --www.runoob.com
+string.gmatch(str, pattern)
+-- 返回一个迭代器函数，每一次调用这个函数，返回一个在字符串 str 找到的下一个符合 pattern 描述的子串。如果参数 pattern 描述的字符串没有找到，迭代函数返回nil。
+
+> for word in string.gmatch("Hello Lua user", "%a+") do print(word) end
+Hello
+Lua
+user
+
+string.match(str, pattern, init)
+string.match()只寻找源字串str中的第一个配对. 参数init可选, 指定搜寻过程的起点, 默认为1。
+在成功配对时, 函数将返回配对表达式中的所有捕获结果; 如果没有设置捕获标记, 则返回整个配对字符串. 当没有成功的配对时, 返回nil。
+> = string.match("I have 2 questions for you.", "%d+ %a+") --questions
+
+> = string.format("%d, %q", string.match("I have 2 questions for you.", "(%d+) (%a+)"))
+2, "questions"
+```
+
+##
+```lua
+```
+
+##
+```lua
+```
+
+##
+```lua
+```
+
+##
+```lua
+```
 
 ##
 ```lua
